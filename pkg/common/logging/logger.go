@@ -7,6 +7,7 @@ import (
 	"go.uber.org/zap/zapcore"
 	"os"
 	"strings"
+	"time"
 )
 
 var (
@@ -40,6 +41,10 @@ func NewLogger() *zap.Logger {
 	return l
 }
 
+func GetLogger() *zap.Logger {
+	return defaultLogger
+}
+
 func SetLevel(level string) error {
 	var lvl zapcore.Level
 
@@ -67,7 +72,7 @@ func SetLevel(level string) error {
 }
 
 func L(ctx context.Context) *zap.Logger {
-	return defaultLogger
+	return LoggerFromContext(ctx)
 }
 
 func WithField(ctx context.Context, field zap.Field) *zap.Logger {
@@ -80,4 +85,28 @@ func WithFields(ctx context.Context, fields ...zap.Field) *zap.Logger {
 
 func WithError(ctx context.Context, err error) *zap.Logger {
 	return L(ctx).With(zap.Error(err))
+}
+
+func StringField(key, val string) zap.Field {
+	return zap.String(key, val)
+}
+
+func IntField(key string, val int) zap.Field {
+	return zap.Int(key, val)
+}
+
+func DurationField(key string, val time.Duration) zap.Field {
+	return zap.Duration(key, val)
+}
+
+func Int64Field(key string, val int64) zap.Field {
+	return zap.Int64(key, val)
+}
+
+func StringsField(key string, val []string) zap.Field {
+	return zap.Strings(key, val)
+}
+
+func BoolField(key string, val bool) zap.Field {
+	return zap.Bool(key, val)
 }
