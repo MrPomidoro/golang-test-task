@@ -6,13 +6,13 @@ import (
 )
 
 type Storage struct {
-	client       postgresql.Client
-	queryBuilder sq.StatementBuilderType
+	Client       postgresql.Client
+	QueryBuilder sq.StatementBuilderType
 }
 
 func NewStorage(client postgresql.Client) *Storage {
 	return &Storage{
-		client:       client,
-		queryBuilder: sq.StatementBuilder.PlaceholderFormat(sq.Dollar),
+		Client:       client,
+		QueryBuilder: sq.StatementBuilder.PlaceholderFormat(sq.Dollar),
 	}
 }
