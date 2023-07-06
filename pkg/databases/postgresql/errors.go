@@ -1,6 +1,6 @@
 package postgresql
 
-import "golang-test-task_/pkg/common/errors"
+import "github.com/golang-test-task/pkg/common/errors"
 
 func ErrCommit(err error) error {
 	return errors.Wrap(err, "failed to commit Tx")
