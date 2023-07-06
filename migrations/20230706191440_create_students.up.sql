@@ -5,7 +5,8 @@ CREATE TABLE students (
   full_name TEXT NOT NULL,
   group_num TEXT NOT NULL,
   email TEXT NOT NULL,
-  username TEXT NOT NULL UNIQUE
+  username TEXT NOT NULL UNIQUE,
+  verify_email BOOL
 );
 
 COMMIT;
