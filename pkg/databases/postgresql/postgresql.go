@@ -33,10 +33,11 @@ type PgConfig struct {
 }
 
 // NewClient creates new postgres client.
-func NewClient(ctx context.Context, maxAttempts int, maxDelay time.Duration, dsn string, binary bool) (pool *pgxpool.Pool, err error) {
+func NewClient(ctx context.Context, maxAttempts int, maxDelay time.Duration, config PgConfig, binary bool) (pool *pgxpool.Pool, err error) {
+
+	dsn := config.ConnStringFromCfg()
 
 	pgxCfg, parseConfigErr := pgxpool.ParseConfig(dsn)
-
 	if parseConfigErr != nil {
 		log.Printf("Unable to parse config: %v\n", parseConfigErr)
 		return nil, parseConfigErr
@@ -62,7 +63,8 @@ func NewClient(ctx context.Context, maxAttempts int, maxDelay time.Duration, dsn
 		return nil
 	}, maxAttempts, maxDelay)
 	if err != nil {
-		log.Fatal("All attempts are exceeded. Unable to connect to PostgreSQL")
+		log.Printf("All attempts are exceeded. unable to connect to PostgreSQL: %v", err)
+		return nil, err
 	}
 
 	return pool, nil
@@ -75,7 +77,6 @@ func DoWithAttempts(fn func() error, maxAttempts int, delay time.Duration) error
 		if err = fn(); err != nil {
 			time.Sleep(delay)
 			maxAttempts--
-
 			continue
 		}
 
