@@ -19,13 +19,13 @@ type RepositoryStudent struct {
 	UpdateAT    sql.NullTime `json:"update_at"`
 }
 
-func (s *RepositoryStudent) ToDomain() model.DomainStudent {
+func (s *RepositoryStudent) ToDomain() model.Student {
 	var updateAT *time.Time
 	if s.UpdateAT.Valid {
 		updateAT = utils.Pointer(s.UpdateAT.Time)
 	}
 
-	return model.DomainStudent{
+	return model.Student{
 		ID:          s.ID.String(),
 		FullName:    s.FullName,
 		GroupNum:    s.GroupNum,
