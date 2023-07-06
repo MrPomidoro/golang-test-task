@@ -25,11 +25,11 @@ type Client interface {
 }
 
 type PgConfig struct {
-	username string
-	password string
-	host     string
-	port     string
-	database string
+	Host     string
+	Port     string
+	Username string
+	Password string
+	DBName   string
 }
 
 // NewClient creates new postgres client.
@@ -89,15 +89,15 @@ func DoWithAttempts(fn func() error, maxAttempts int, delay time.Duration) error
 func (c *PgConfig) ConnStringFromCfg() string {
 	url := strings.Builder{}
 	url.WriteString("postgresql://")
-	url.WriteString(c.username)
+	url.WriteString(c.Username)
 	url.WriteString(":")
-	url.WriteString(c.password)
+	url.WriteString(c.Password)
 	url.WriteString("@")
-	url.WriteString(c.host)
+	url.WriteString(c.Host)
 	url.WriteString(":")
-	url.WriteString(c.port)
+	url.WriteString(c.Port)
 	url.WriteString("/")
-	url.WriteString(c.database)
+	url.WriteString(c.DBName)
 
 	return url.String()
 }
