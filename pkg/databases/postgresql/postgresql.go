@@ -33,14 +33,10 @@ type PgConfig struct {
 }
 
 // NewClient creates new postgres client.
-func NewClient(
-	ctx context.Context,
-	maxAttempts int,
-	maxDelay time.Duration,
-	dsn string,
-	binary bool,
-) (pool *pgxpool.Pool, err error) {
+func NewClient(ctx context.Context, maxAttempts int, maxDelay time.Duration, dsn string, binary bool) (pool *pgxpool.Pool, err error) {
+
 	pgxCfg, parseConfigErr := pgxpool.ParseConfig(dsn)
+
 	if parseConfigErr != nil {
 		log.Printf("Unable to parse config: %v\n", parseConfigErr)
 		return nil, parseConfigErr
