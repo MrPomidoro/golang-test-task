@@ -9,10 +9,10 @@ import (
 )
 
 type StudentDAO struct {
-	storage storage.Storage
+	storage *storage.Storage
 }
 
-func NewStudent(storage storage.Storage) *StudentDAO {
+func NewStudent(storage *storage.Storage) *StudentDAO {
 	return &StudentDAO{storage: storage}
 }
 

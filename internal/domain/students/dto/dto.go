@@ -1,4 +1,4 @@
-package students
+package dto
 
 import (
 	"github.com/golang-test-task/pkg/utils"
