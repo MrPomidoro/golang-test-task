@@ -7,6 +7,5 @@ import (
 
 func Students(r *gin.RouterGroup, controller v1.Student) {
 	student := r.Group("/students")
-
 	student.POST("/create", controller.Create)
 }

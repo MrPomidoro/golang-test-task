@@ -22,17 +22,17 @@ type Clock interface {
 	Now() time.Time
 }
 
-type StudentsService struct {
+type Service struct {
 	repository repository
 	identity   IdentityGenerator
 	clock      Clock
 }
 
-func NewStudentsService(repository repository, identity IdentityGenerator, clock Clock) StudentsService {
-	return StudentsService{repository: repository, identity: identity, clock: clock}
+func NewStudentsService(repository repository, identity IdentityGenerator, clock Clock) Service {
+	return Service{repository: repository, identity: identity, clock: clock}
 }
 
-func (s *StudentsService) Create(ctx context.Context, dto dto.CreateDTO) (model.Student, error) {
+func (s *Service) Create(ctx context.Context, dto dto.CreateStudentDTO) (model.Student, error) {
 
 	rst := students.RepositoryStudent{
 		ID:          s.identity.GenerateUUIDv4(),

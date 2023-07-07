@@ -9,10 +9,10 @@ import (
 )
 
 type Student struct {
-	service students.StudentsService
+	service students.Service
 }
 
-func NewStudent(service students.StudentsService) *Student {
+func NewStudent(service students.Service) *Student {
 	return &Student{service: service}
 }
 
@@ -24,14 +24,14 @@ func NewStudent(service students.StudentsService) *Student {
 // @Tags User
 // @Accept json
 // @Produce json
-// @Param user body dto.CreateDTO true "User object to update"
+// @Param user body dto.CreateStudentDTO true "User object to update"
 // @Success 200 {object} api.Success
 // @Failure 400 {object} api.Error
 // @Failure 500 {object} api.Error
 // @Router /students/create [post]
 func (s *Student) Create(c *gin.Context) {
 
-	var dto dto.CreateDTO
+	var dto dto.CreateStudentDTO
 
 	if err := c.BindJSON(&dto); err != nil {
 		api.ErrorResponse(c, http.StatusBadRequest, err)
