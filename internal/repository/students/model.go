@@ -26,7 +26,7 @@ func (s *RepositoryStudent) ToDomain() model.Student {
 	}
 
 	return model.Student{
-		ID:          s.ID.String(),
+		ID:          s.ID,
 		FullName:    s.FullName,
 		GroupNum:    s.GroupNum,
 		Email:       s.Email,
