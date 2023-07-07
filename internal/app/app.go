@@ -30,12 +30,12 @@ func NewApp(ctx context.Context) *App {
 	}
 }
 
-func (a *App) Start() (*gin.Engine, error) {
+func (a *App) Start() error {
 
 	db, err := a.initDB()
 	if err != nil {
 		logging.L(a.ctx).Fatal(errors.Errorf("failed to connect to postgres: %s", err).Error())
-		return nil, err
+		return err
 	}
 
 	defer db.Close()
@@ -45,7 +45,7 @@ func (a *App) Start() (*gin.Engine, error) {
 
 	logging.L(a.ctx).Info("starting server")
 
-	return r, nil
+	return r.Run(os.Getenv("SERVER_URL"))
 }
 
 func (a *App) initGlobalDelivery(db *pgxpool.Pool) *register_layers.GlobalDelivery {
