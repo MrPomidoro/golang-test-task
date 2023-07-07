@@ -17,5 +17,3 @@
 **.idea/**
 
 build/
-/.env
-/tmp
