@@ -1,7 +1,7 @@
 package repository
 
 const (
-	StudentTable     = "public.students"
-	CreditLimitTable = "public.students"
-	TasksTable       = "public.students"
+	StudentTable     = "students"
+	CreditLimitTable = "credit_limits"
+	TasksTable       = "tasks"
 )
