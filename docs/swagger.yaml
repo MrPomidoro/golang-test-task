@@ -1,8 +1,45 @@
 basePath: /api/v1
+definitions:
+  students.CreateDTO:
+    properties:
+      email:
+        type: string
+      full_name:
+        type: string
+      group_num:
+        type: string
+      username:
+        type: string
+    type: object
 info:
   contact: {}
   description: Golang test task
   title: Golang test task
   version: "1.0"
-paths: {}
+paths:
+  /users:
+    post:
+      consumes:
+      - application/json
+      description: Create a user.
+      operationId: update-user
+      parameters:
+      - description: User object to update
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/students.CreateDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "500":
+          description: Internal Server Error
+      summary: Create a user.
+      tags:
+      - User
 swagger: "2.0"
