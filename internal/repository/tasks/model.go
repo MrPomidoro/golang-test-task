@@ -21,11 +21,5 @@ func (s *RepositoryTask) ToDomain() model.Task {
 	if s.UpdateAT.Valid {
 		updateAT = utils.Pointer(s.UpdateAT.Time)
 	}
-	return model.Task{
-		ID:          s.ID.String(),
-		Description: s.Description,
-		Cost:        s.Cost,
-		CreateAT:    s.CreateAT,
-		UpdateAT:    updateAT,
-	}
+	return model.NewTask(s.ID, s.Description, s.Cost, s.CreateAT, updateAT)
 }

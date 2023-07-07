@@ -25,14 +25,5 @@ func (s *RepositoryStudent) ToDomain() model.Student {
 		updateAT = utils.Pointer(s.UpdateAT.Time)
 	}
 
-	return model.Student{
-		ID:          s.ID,
-		FullName:    s.FullName,
-		GroupNum:    s.GroupNum,
-		Email:       s.Email,
-		Username:    s.Username,
-		VerifyEmail: s.VerifyEmail,
-		CreateAT:    s.CreateAT,
-		UpdateAT:    updateAT,
-	}
+	return model.NewStudent(s.ID, s.FullName, s.GroupNum, s.Email, s.Username, s.VerifyEmail, s.CreateAT, updateAT)
 }
