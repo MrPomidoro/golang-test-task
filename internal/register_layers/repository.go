@@ -9,7 +9,7 @@ type GlobalRepository struct {
 	StudentRepository *students.StudentDAO
 }
 
-func NewGlobalRepository(storage storage.Storage) *GlobalRepository {
+func NewGlobalRepository(storage *storage.Storage) *GlobalRepository {
 	return &GlobalRepository{
 		StudentRepository: students.NewStudent(storage),
 	}

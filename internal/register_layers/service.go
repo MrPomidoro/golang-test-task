@@ -1,15 +1,15 @@
 package register_layers
 
 import (
-	"github.com/golang-test-task/internal/domain/students/service"
+	"github.com/golang-test-task/internal/service/students"
 )
 
 type GlobalService struct {
-	StudentService *service.StudentsService
+	StudentService students.StudentsService
 }
 
-func NewGlobalService(repository GlobalRepository) GlobalService {
-	return GlobalService{
-		StudentService: service.NewStudentsService(repository.StudentRepository),
+func NewGlobalService(repository *GlobalRepository, identity students.IdentityGenerator, clock students.Clock) *GlobalService {
+	return &GlobalService{
+		StudentService: students.NewStudentsService(repository.StudentRepository, identity, clock),
 	}
 }
