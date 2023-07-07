@@ -59,6 +59,8 @@
 
 ## Для запуска
 
+### Использовать Makefile или docker
+
 ## Rest API документация OpenAPI Swagger
 ```bash
   http://localhost:8080/swagger/
