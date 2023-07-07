@@ -2,10 +2,6 @@ package email
 
 import "github.com/go-gomail/gomail"
 
-type EmailService interface {
-	SendHTML(message, subject, receiver string) error
-}
-
 type emailService struct {
 	dialer   *gomail.Dialer
 	sender   string
