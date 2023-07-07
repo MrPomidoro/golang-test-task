@@ -2,8 +2,10 @@ package students
 
 import (
 	"context"
+	"fmt"
 	"github.com/golang-test-task/internal/repository"
 	"github.com/golang-test-task/internal/repository/storage"
+	"github.com/golang-test-task/pkg/common/logging"
 	"github.com/golang-test-task/pkg/databases/postgresql"
 	"github.com/google/uuid"
 )
@@ -18,6 +20,16 @@ func NewStudent(storage *storage.Storage) *StudentDAO {
 
 func (s *StudentDAO) Create(ctx context.Context, st RepositoryStudent) error {
 
+	logging.WithFields(
+		ctx,
+		logging.StringField("id", st.ID.String()),
+		logging.StringField("full_name", st.FullName),
+		logging.StringField("group_num", st.GroupNum),
+		logging.StringField("email", st.Email),
+		logging.StringField("username", st.Username),
+		logging.StringField("create_at", st.CreateAT.String()),
+	).Info("create student")
+
 	sql, args, err := s.storage.QueryBuilder.
 		Insert(repository.StudentTable).
 		Columns(
@@ -29,9 +41,10 @@ func (s *StudentDAO) Create(ctx context.Context, st RepositoryStudent) error {
 			"create_at",
 		).
 		Values(
-			st.ID,
+			st.ID.String(),
 			st.FullName,
 			st.GroupNum,
+			st.Email,
 			st.Username,
 			st.CreateAT,
 		).ToSql()
@@ -40,7 +53,11 @@ func (s *StudentDAO) Create(ctx context.Context, st RepositoryStudent) error {
 		return err
 	}
 
-	exec, execErr := s.storage.Client.Exec(ctx, sql, args)
+	logging.WithFields(ctx, logging.StringField("sql", sql)).Info("create student")
+
+	logging.L(ctx).Info(fmt.Sprintf("args %v", args))
+
+	exec, execErr := s.storage.Client.Exec(ctx, sql, args...)
 	if execErr != nil {
 		execErr = postgresql.ErrDoQuery(execErr)
 		return execErr
@@ -50,10 +67,10 @@ func (s *StudentDAO) Create(ctx context.Context, st RepositoryStudent) error {
 		return repository.ErrNothingInserted
 	}
 
-	return s.createDefaultCashAccount(ctx, st.ID)
+	return s.createDefaultCashAccount(ctx, st.ID.String())
 }
 
-func (s *StudentDAO) createDefaultCashAccount(ctx context.Context, studentID uuid.UUID) error {
+func (s *StudentDAO) createDefaultCashAccount(ctx context.Context, studentID string) error {
 	sql, args, err := s.storage.QueryBuilder.
 		Insert(repository.CreditLimitTable).Columns("student_id").
 		Values(studentID).ToSql()
@@ -62,7 +79,9 @@ func (s *StudentDAO) createDefaultCashAccount(ctx context.Context, studentID uui
 		return err
 	}
 
-	exec, execErr := s.storage.Client.Exec(ctx, sql, args)
+	logging.WithFields(ctx, logging.StringField("sql", sql)).Info("create default cash account")
+
+	exec, execErr := s.storage.Client.Exec(ctx, sql, args...)
 	if execErr != nil {
 		execErr = postgresql.ErrDoQuery(execErr)
 		return execErr

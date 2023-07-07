@@ -24,11 +24,11 @@ func NewStudent(service students.StudentsService) *Student {
 // @Tags User
 // @Accept json
 // @Produce json
-// @Param user body students.CreateDTO true "User object to update"
+// @Param user body dto.CreateDTO true "User object to update"
 // @Success 200 {object} api.Success
 // @Failure 400 {object} api.Error
 // @Failure 500 {object} api.Error
-// @Router /users [post]
+// @Router /students/create [post]
 func (s *Student) Create(c *gin.Context) {
 
 	var dto dto.CreateDTO

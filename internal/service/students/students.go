@@ -29,7 +29,7 @@ type StudentsService struct {
 }
 
 func NewStudentsService(repository repository, identity IdentityGenerator, clock Clock) StudentsService {
-	return StudentsService{repository: repository}
+	return StudentsService{repository: repository, identity: identity, clock: clock}
 }
 
 func (s *StudentsService) Create(ctx context.Context, dto dto.CreateDTO) (model.Student, error) {
