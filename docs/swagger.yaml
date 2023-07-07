@@ -1,6 +1,21 @@
 basePath: /api/v1
 definitions:
-  students.CreateDTO:
+  api.Error:
+    properties:
+      error:
+        type: string
+      status:
+        type: string
+    type: object
+  api.Success:
+    properties:
+      data: {}
+      message:
+        type: string
+      status:
+        type: string
+    type: object
+  dto.CreateStudentDTO:
     properties:
       email:
         type: string
@@ -11,13 +26,95 @@ definitions:
       username:
         type: string
     type: object
+  dto.CreateTaskDTO:
+    properties:
+      cost:
+        type: integer
+      description:
+        type: string
+    type: object
+  v1.GetSlowTask:
+    properties:
+      amount:
+        type: integer
+      nums:
+        items:
+          type: integer
+        type: array
+      username:
+        type: string
+    type: object
 info:
   contact: {}
   description: Golang test task
   title: Golang test task
   version: "1.0"
 paths:
-  /users:
+  /jobs/add_credit:
+    post:
+      consumes:
+      - application/json
+      description: Add credit
+      parameters:
+      - description: Amount
+        in: query
+        name: amount
+        required: true
+        type: integer
+      - description: Username
+        in: query
+        name: username
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.Success'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.Error'
+      summary: Add credit
+      tags:
+      - Job
+  /jobs/slow_task_missing_numbers:
+    post:
+      consumes:
+      - application/json
+      description: Get slow task missing numbers
+      parameters:
+      - description: Get slow task missing numbers
+        in: body
+        name: slow_task
+        required: true
+        schema:
+          $ref: '#/definitions/v1.GetSlowTask'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.Success'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.Error'
+      summary: Get slow task missing numbers
+      tags:
+      - Job
+  /students/create:
     post:
       consumes:
       - application/json
@@ -29,17 +126,101 @@ paths:
         name: user
         required: true
         schema:
-          $ref: '#/definitions/students.CreateDTO'
+          $ref: '#/definitions/dto.CreateStudentDTO'
       produces:
       - application/json
       responses:
         "200":
           description: OK
+          schema:
+            $ref: '#/definitions/api.Success'
         "400":
           description: Bad Request
+          schema:
+            $ref: '#/definitions/api.Error'
         "500":
           description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.Error'
       summary: Create a user.
       tags:
       - User
+  /tasks/:
+    get:
+      consumes:
+      - application/json
+      description: Get all tasks.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.Success'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.Error'
+      summary: Get all tasks.
+      tags:
+      - Task
+  /tasks/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get a task.
+      parameters:
+      - description: Task ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.Success'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.Error'
+      summary: Get a task.
+      tags:
+      - Task
+  /tasks/create:
+    post:
+      consumes:
+      - application/json
+      description: Create a task.
+      parameters:
+      - description: Task object to update
+        in: body
+        name: task
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateTaskDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.Success'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.Error'
+      summary: Create a task.
+      tags:
+      - Task
 swagger: "2.0"

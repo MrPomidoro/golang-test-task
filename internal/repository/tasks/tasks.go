@@ -70,12 +70,8 @@ func (r *TaskDAO) Get(ctx context.Context, id string) (RepositoryTask, error) {
 		logging.StringField("id", id),
 	).Info("get task")
 
-	sql, args, err := r.storage.QueryBuilder.Select(repository.TasksTable).
-		Columns(
-			"id",
-			"description",
-			"cost",
-		).
+	sql, args, err := r.storage.QueryBuilder.Select("id", "description", "cost", "create_at").
+		From(repository.TasksTable).
 		Where("id = ?", id).ToSql()
 
 	if err != nil {
@@ -91,21 +87,17 @@ func (r *TaskDAO) Get(ctx context.Context, id string) (RepositoryTask, error) {
 
 	rt := RepositoryTask{}
 
-	if err := row.Scan(&rt.ID, &rt.Description, &rt.Cost); err != nil {
+	if err := row.Scan(&rt.ID, &rt.Description, &rt.Cost, &rt.CreateAT); err != nil {
 		err = postgresql.ErrScan(err)
 		return RepositoryTask{}, err
 	}
 
-	return rt, repository.ErrNotFound
+	return rt, nil
 
 }
 
 func (r *TaskDAO) GetAll(ctx context.Context) ([]RepositoryTask, error) {
-	sql, args, err := r.storage.QueryBuilder.Select(repository.TasksTable).Columns(
-		"id",
-		"description",
-		"cost",
-	).ToSql()
+	sql, args, err := r.storage.QueryBuilder.Select("id", "description", "cost", "create_at").From(repository.TasksTable).ToSql()
 
 	if err != nil {
 		err = postgresql.ErrCreateQuery(err)
@@ -124,16 +116,21 @@ func (r *TaskDAO) GetAll(ctx context.Context) ([]RepositoryTask, error) {
 
 	defer rows.Close()
 
-	tasks := []RepositoryTask{}
+	var tasks []RepositoryTask
 
 	for rows.Next() {
 		var rt RepositoryTask
-		if err := rows.Scan(&rt.ID, &rt.Description, &rt.Cost); err != nil {
+		if err := rows.Scan(&rt.ID, &rt.Description, &rt.Cost, &rt.CreateAT); err != nil {
 			err = postgresql.ErrScan(err)
 			return []RepositoryTask{}, err
 		}
+		logging.WithFields(ctx,
+			logging.StringField("id", rt.ID.String()),
+			logging.StringField("description", rt.Description),
+			logging.StringField("cost", string(rt.Cost)),
+		).Info("get all tasks")
 		tasks = append(tasks, rt)
 	}
 
-	return tasks, repository.ErrNotFound
+	return tasks, nil
 }

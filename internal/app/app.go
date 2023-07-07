@@ -2,6 +2,7 @@ package app
 
 import (
 	"context"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-test-task/internal/register_layers"
 	repositoryStorage "github.com/golang-test-task/internal/repository/storage"
@@ -11,11 +12,13 @@ import (
 	"github.com/golang-test-task/pkg/common/logging"
 	"github.com/golang-test-task/pkg/core/identity"
 	"github.com/golang-test-task/pkg/databases/postgresql"
+	"github.com/golang-test-task/pkg/service/email"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/pkg/errors"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 	"os"
+	"strconv"
 	"time"
 )
 
@@ -57,7 +60,11 @@ func (a *App) initGlobalDelivery(db *pgxpool.Pool) *register_layers.GlobalDelive
 	generator := identity.NewGenerator()
 	c := clock.New()
 
-	gs := register_layers.NewGlobalService(gr, generator, c)
+	port, _ := strconv.Atoi(os.Getenv("SMTP_PORT"))
+	emailSender := email.NewEmailService(os.Getenv("SMTP_SENDER"), os.Getenv("SMTP_HOST"), port, os.Getenv("SMTP_USERNAME"), os.Getenv("SMTP_PASSWORD"))
+
+	logging.L(a.ctx).Info(fmt.Sprintf("SMTP emailSender: %v", emailSender))
+	gs := register_layers.NewGlobalService(gr, generator, c, emailSender)
 	gd := register_layers.NewGlobalDelivery(gs)
 
 	return gd
@@ -90,6 +97,8 @@ func (a *App) initServer(gd *register_layers.GlobalDelivery) *gin.Engine {
 	public := r.Group("/api/v1")
 	// Define routes for authentication, users, friends, posts, and commentaries.
 	route.Students(public, *gd.StudentDelivery)
+	route.Tasks(public, *gd.TaskDelivery)
+	route.Job(public, *gd.JobDelivery)
 
 	// Serve Swagger UI.
 	public.GET("/swagger", server.Redirect)

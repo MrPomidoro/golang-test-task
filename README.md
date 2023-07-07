@@ -104,3 +104,88 @@ curl -X 'POST' \
   "error": "Repository.Create: failed to query: ERROR: duplicate key value violates unique constraint \"students_username_key\" (SQLSTATE 23505)"
 }
 ```
+
+## Для получения ответа на задачу, сначала надо выбрать задвчу из общегго списка
+
+```bash
+curl -X 'GET' \
+  'http://localhost:8080/api/v1/tasks/' \
+  -H 'accept: application/json'
+ ```
+
+```json
+
+{
+  "status": "success",
+  "message": "Success get all tasks",
+  "data": [
+    {
+      "id": "48acfe1a-9bcb-41fd-b5d6-e34f14c10f87",
+      "description": "Дан неотсортированный массив из N чисел от 1 до N,\nпри этом несколько чисел из диапазона [1, N] пропущено,\nа некоторые присутствуют дважды.\n\nНайти все пропущенные числа.",
+      "cost": 100,
+      "create_at": "2023-07-07T14:06:48.940309+03:00",
+      "update_at": null
+    }
+  ]
+}
+```
+### Если интересует конкретная задача, то можно найти по ее UUID
+
+```bash
+curl -X 'GET' \
+  'http://localhost:8080/api/v1/tasks/48acfe1a-9bcb-41fd-b5d6-e34f14c10f87' \
+  -H 'accept: application/json'
+```
+
+```json
+
+{
+  "status": "success",
+  "message": "Success get task",
+  "data": {
+    "id": "48acfe1a-9bcb-41fd-b5d6-e34f14c10f87",
+    "description": "Дан неотсортированный массив из N чисел от 1 до N,\nпри этом несколько чисел из диапазона [1, N] пропущено,\nа некоторые присутствуют дважды.\n\nНайти все пропущенные числа.",
+    "cost": 100,
+    "create_at": "2023-07-07T14:06:48.940309+03:00",
+    "update_at": null
+  }
+}
+```
+
+### На основании полученной задачи мы имеем цены за задачи, которые мы отправляем в метод списания денег и получения ответа на email
+
+```bash
+curl -X 'POST' \
+  'http://localhost:8080/api/v1/jobs/slow_task_missing_numbers' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "amount": 100,
+  "nums": [4, 3, 2, 7, 8, 2, 3, 1],
+  "username": "SDA"
+}'
+```
+
+### Так же мы можем пополнить счет определенного пользователя
+```bash
+curl -X 'POST' \
+  'http://localhost:8080/api/v1/jobs/add_credit?amount=12&username=SDA' \
+  -H 'accept: application/json' \
+  -d ''
+```
+
+# ВАЖНО
+
+#### 1. Перед запуском приложения, определить все environment переменныe
+#### 2. Найти переменные можно в Dokerfile
+#### 3. Для упрощения пользования, был описан Makefile
+#### 4. Так же описан конфигурационный файл для air
+
+# Вопросы, которые не вошли в реализацию
+
+#### 1. Необходимо расписать полностью все методы, для переиспользования их на адмиской стороне;
+#### 2. Сделать распределение ролей (админ, обычный пользователь);
+#### 3. Сделать верификацию email, как самое просто решение использовать redis для кеширования;
+#### 4. Авторизация по логину, при верификации email;
+#### 5. Добавить варианты решение кодом, а не просто ответом (генерация для 2-3х языков)
+
