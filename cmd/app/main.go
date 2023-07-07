@@ -37,11 +37,6 @@ func main() {
 	ctx = logging.ContextWithLogger(ctx, logging.NewLogger())
 
 	newApp := app.NewApp(ctx)
-	server, err := newApp.Start()
-	if err != nil {
-		logging.L(ctx).Fatal(err.Error())
-	}
-
-	log.Fatal(server.Run())
+	logging.L(ctx).Fatal(newApp.Start().Error())
 
 }
