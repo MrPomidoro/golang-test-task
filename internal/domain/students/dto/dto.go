@@ -5,15 +5,15 @@ import (
 	"time"
 )
 
-type CreateDTO struct {
+type CreateStudentDTO struct {
 	FullName string `json:"full_name"`
 	GroupNum string `json:"group_num"`
 	Email    string `json:"email"`
 	Username string `json:"username"`
 }
 
-func NewCreateDTO(fullName, groupNum, email, username string) CreateDTO {
-	return CreateDTO{
+func NewCreateDTO(fullName, groupNum, email, username string) CreateStudentDTO {
+	return CreateStudentDTO{
 		FullName: fullName,
 		GroupNum: groupNum,
 		Email:    email,
@@ -21,7 +21,7 @@ func NewCreateDTO(fullName, groupNum, email, username string) CreateDTO {
 	}
 }
 
-type UpdateDTO struct {
+type UpdateStudentDTO struct {
 	FullName    string    `json:"full_name"`
 	GroupNum    string    `json:"group_num"`
 	Email       string    `json:"email"`
@@ -30,13 +30,13 @@ type UpdateDTO struct {
 	UpdateAT    time.Time `json:"update_at"`
 }
 
-func NewUpdateDTO(fullName, groupNum, email, username string, verifyEmail bool, updateAT string) (UpdateDTO, error) {
+func NewUpdateDTO(fullName, groupNum, email, username string, verifyEmail bool, updateAT string) (UpdateStudentDTO, error) {
 	upt, err := utils.GetMoscowTime(updateAT)
 	if err != nil {
-		return UpdateDTO{}, err
+		return UpdateStudentDTO{}, err
 	}
 
-	return UpdateDTO{
+	return UpdateStudentDTO{
 		FullName:    fullName,
 		GroupNum:    groupNum,
 		Email:       email,
